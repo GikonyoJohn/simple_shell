@@ -138,3 +138,6 @@ Handle Ctrl+C: your shell should not quit when the user inputs ^C
 ````
 signal(SIGINT, SIG_IGN); /* Ignore the Ctrl+c Input */
 ````
+## Authors
+* **John Mwangi Gikonyo** 
+* **Sanchez Samuel** 
