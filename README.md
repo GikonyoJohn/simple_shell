@@ -87,8 +87,9 @@ Handle Ctrl+C: your shell should not quit when the user inputs ^C
 Because we already use Ctrl+D to exit our custom shell
 
 Usage:
-signal(SIGINT, SIG_IGN); /* Ignore the Ctrl+c Input
+signal(SIGINT, SIG_IGN); /* Ignore the Ctrl+c Input */
 
- *Authors
+
+Authors
 John Mwangi Gikonyo
 Sanchez Samuel
