@@ -1,95 +1,39 @@
 #include "main.h"
 
 /**
- * findBuiltIns - validates if command is builtin and executes
- * @build: input build
- * Return: true if found, false if not
+ * built_in - commands.
+ *
+ * @Arg_str: argument string
+ * @ct_output: output.
+ * @row: row arguments.
+ *
+ * Return: -1,0
+ *
  */
-_Bool findBuiltIns(config *build)
-{
-	register int i = 0;
-	type_b getBuiltIns[] = {
-		{"exit", exitFunc},
-		{"env", envFunc},
-		{"history", historyFunc},
-		{"alias", aliasFunc},
-		{"cd", cdFunc},
-		{"setenv", setenvFunc},
-		{"unsetenv", unsetenvFunc},
-		{"help", helpFunc},
-		{NULL, NULL}
-	};
 
-	while (getBuiltIns[i].command)
+int built_in(char **Arg_str, int ct_output, char *row)
+{
+	char *built_box[2] = {"exit", "env"};
+	int i = 0, size_env;
+	char *env = NULL;
+
+	if (_strcmp(built_box[0], Arg_str[0]) == 0)
 	{
-		if (_strcmp(build->args[0], getBuiltIns[i].command) == 0)
+		free(Arg_str);
+		free(row);
+		exit(ct_output);
+	}
+
+	else if (_strcmp(built_box[1], Arg_str[0]) == 0)
+	{
+		for (i = 0; environ[i] ; i++)
 		{
-			getBuiltIns[i].func(build);
-			freeArgsAndBuffer(build);
-			return (true);
+			env = environ[i];
+			size_env = _strlen(env);
+			write(STDOUT, env, size_env);
+			write(STDOUT, "\n", 1);
 		}
-		i++;
 	}
-	return (false);
-}
 
-/**
- * exitFunc - exits the application
- * @build: input build
- * Return: 1 on success, 0 on failure
- */
-int exitFunc(config *build)
-{
-	register int argCount, exitStatus;
-
-	argCount = countArgs(build->args);
-	if (argCount == 1)
-	{
-		freeMembers(build);
-		if (build->errorStatus)
-			exit(build->errorStatus);
-		exit(EXIT_SUCCESS);
-	}
-	else if (argCount > 1)
-	{
-		exitStatus = _atoi(build->args[1]);
-		if (exitStatus == -1)
-		{
-			errno = EILLEGAL;
-			build->errorStatus = 2;
-			errorHandler(build);
-			return (0);
-		}
-		freeMembers(build);
-		exit(exitStatus);
-	}
-	return (1);
-}
-
-/**
- * historyFunc - displays command history
- * @build: input build
- * Return: 1 on success, 0 on failure
- */
-int historyFunc(config *build)
-{
-	char *str = "Currently in development\n";
-
-	(void)build;
-	write(STDOUT_FILENO, str, _strlen(str));
-	return (1);
-}
-
-/**
- * aliasFunc - displays local aliases
- * @build: input build
- * Return: 1 on success, 0 on failure
- */
-int aliasFunc(config *build)
-{
-	char *str = "Currently in development\n";
-
-	(void)build;
-	write(STDOUT_FILENO, str, _strlen(str));
-	return (1);
+	return (0);
 }

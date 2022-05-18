@@ -1,110 +1,51 @@
 #include "main.h"
 
 /**
- * cdFunc - execute cd builtin
- * @build: input build
- * Return: 1 on success, 0 on failure
+ * _strncmp - compare strings.
+ *
+ * @string_1: string 1
+ * @string_2: string 2
+ * @len: Length
+ *
+ * Return: 0,-1
+ *
  */
-int cdFunc(config *build)
+
+int _strncmp(char *string_1, char *string_2, int len)
 {
-	register uint count = 0;
-	_Bool ableToChange = false;
-
-	count = countArgs(build->args);
-	if (count == 1)
-		ableToChange = cdToHome(build);
-	else if (count == 2 && _strcmp(build->args[1], "-") == 0)
-		ableToChange = cdToPrevious(build);
-	else
-		ableToChange = cdToCustom(build);
-	if (ableToChange)
-		updateEnviron(build);
-	return (1);
-}
-
-/**
- * cdToHome - change directory to home
- * @build: input build
- * Return: true on success, false on failure
- */
-_Bool cdToHome(config *build)
-{
-	register int i;
-	char *str, *ptr;
-
-	i = searchNode(build->env, "HOME");
-	if (i == -1)
+	for (; *string_1 && *string_2 && len >= 0; len--)
 	{
-		return (true);
+		if (*string_1 == *string_2)
+		{
+			string_1++;
+			string_2++;
+		}
+
+		else
+			return (-1);
 	}
-	str = getNodeAtIndex(build->env, i);
-	ptr = _strchr(str, '=');
-	ptr++;
-	chdir(ptr);
-	free(str);
-	return (true);
+
+	return (0);
 }
 
-/**
- * cdToPrevious - change directory to previous directory -
- * address is found in OLDPWD env var
- * @build: input build
- * Return: true on success, false on failure
- */
-_Bool cdToPrevious(config *build)
-{
-	register int i;
-	char *str, *ptr;
-	char *current = NULL;
 
-	current = getcwd(current, 0);
-	i = searchNode(build->env, "OLDPWD");
-	if (i == -1)
+/**
+ * _strcmp - Compares 2 strings.
+ *
+ * @string_1: string 1
+ * @string_2: string 2
+ * Return: 0
+ */
+
+int _strcmp(char *string_1, char *string_2)
+{
+	int i;
+
+	for (i = 0; string_1[i] != '\0'; i++)
 	{
-		chdir(current);
-		write(STDOUT_FILENO, current, _strlen(current));
-		displayNewLine();
-		return (true);
+		if (string_1[i] != string_2[i])
+			return (string_1[i] - string_2[i]);
 	}
-	str = getNodeAtIndex(build->env, i);
-	ptr = _strchr(str, '=');
-	ptr++;
-	chdir(ptr);
-	write(STDOUT_FILENO, ptr, _strlen(ptr));
-	displayNewLine();
-	free(str);
-	return (true);
-}
 
-/**
- * cdToCustom - change directory to what user inputs in
- * @build: input build
- * Return: true on success, false on failure
- */
-_Bool cdToCustom(config *build)
-{
-	register int changeStatus;
-
-	changeStatus = chdir(build->args[1]);
-	if (changeStatus == -1)
-	{
-		errno = EBADCD;
-		errorHandler(build);
-		return (false);
-	}
-	return (true);
-}
-
-/**
- * updateEnviron - change environmental variables
- * @build: input build
- * Return: true on success false on failure
- */
-_Bool updateEnviron(config *build)
-{
-	register int i;
-
-	i = updateOld(build);
-	updateCur(build, i);
-	return (true);
+	return (0);
 }

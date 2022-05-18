@@ -1,40 +1,28 @@
 #include "main.h"
 
 /**
-* countArgs - count the number of arguments
-* @args: input array of strings
-* Return: number of strings
-*/
-int countArgs(char **args)
+ * Run - Check if is built-in
+ *
+ * @Arg_str: argument string.
+ * @ct_output: output.
+ * @row: row arguments.
+ *
+ * Return: returns other than exit or env
+ */
+
+int Run(char **Arg_str, int ct_output, char *row)
 {
-	register int i = 0;
+	char *built_box[2] = {"exit", "env"};
 
-	while (args[i])
-		i++;
-	return (i);
-}
+	if (*Arg_str == NULL)
+		return (1);
 
-/**
-* _atoi - change string to an integer
-* @s: input string
-* Return: -1 if it's not a valid number, else the converted number
-*/
-int _atoi(char *s)
-{
-	register int i = 0;
-	unsigned long num = 0;
+	else if (_strcmp(built_box[0], Arg_str[0]) == 0)
+		return (built_in(Arg_str, ct_output, row));
 
-	while (s[i])
-	{
-		if (s[i] >= '0' && s[i] <= '9')
-			num = num * 10 + s[i] - '0';
-		else
-			return (-1);
-		i++;
-	}
-	if (num > INT_MAX)
-	{
-		return (-1);
-	}
-	return (num);
+	else if (_strcmp(built_box[1], Arg_str[0]) == 0)
+		return (built_in(Arg_str, ct_output, row));
+
+	else
+		return (comp_Arg(Arg_str, ct_output));
 }
