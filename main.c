@@ -1,38 +1,29 @@
 #include "main.h"
 
 /**
- * main - entry point for application
- * @ac: argument count
- * @av: argument vector
- * Return: 0 on success
+ * main - start shell.
+ *
+ * Return: (0).
  */
-int main(int ac, char **av)
-{
-	config build;
 
-	(void)ac;
-	signal(SIGINT, sigintHandler);
-	configInit(&build);
-	build.shellName = av[0];
-	shell(&build);
+int main(void)
+{
+	char *row = NULL;
+	char **tokens = NULL;
+	int ct_output = 0;
+
+	while (1)
+	{
+		if (isatty(STDIN))
+			write(STDOUT, "#holbies$ ", 10);
+
+		row = rd_row();
+		tokens = tokenizer(row);
+		ct_output = Run(tokens, ct_output, row);
+
+		free(row);
+		free(tokens);
+	}
+
 	return (0);
-}
-
-/**
- * configInit - initialize member values for config struct
- * @build: input build
- * Return: build with initialized members
- */
-config *configInit(config *build)
-{
-	build->env = generateLinkedList(environ);
-	build->envList = NULL;
-	build->args = NULL;
-	build->buffer = NULL;
-	build->path = _getenv("PATH", environ);
-	build->fullPath = NULL;
-	build->lineCounter = 0;
-	build->shellName = NULL;
-	build->errorStatus = 0;
-	return (build);
 }
